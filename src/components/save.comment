@@ -1,0 +1,100 @@
+    /*shaderCanvas.setShader(`
+#extension GL_OES_standard_derivatives : enable
+
+    precision mediump float;
+    uniform vec3 u_resolution;
+    uniform float u_time;
+
+    // Draw Space Curvature Lines?
+    #define Space_Curvature_Lines
+    
+    // Draw Shape: 
+    // 0 - None, 1 - Circle, 2 - Square, 3 - Triangle.
+    #define Shape 1
+    
+    // Try Different Space Curvature (1 or 2), you can add new, XD:
+    #define variant 1
+    
+    // Position of camera.
+    
+    #if(variant == 1)
+        vec2 cameraPos = vec2(0.75, -1.0);
+    #elif(variant == 2)
+        vec2 cameraPos = vec2(0.0, 0.0);
+    #endif
+    
+    #define AA_UNIT ( 8./u_resolution.y )
+    #define SMAA(d) ( smoothstep(AA_UNIT, 0., d) )
+
+    float y_axis(vec2 uv, float thickness) { return SMAA(abs(uv.x)-thickness); }
+    float x_axis(vec2 uv, float thickness) { return SMAA(abs(uv.y)-thickness); }
+    float vertical_line(vec2 uv, float x0, float thickness) { return SMAA(abs(uv.x-x0)-thickness/2.); }
+    float horizontal_line(vec2 uv, float y0, float thickness) { return SMAA(abs(uv.y-y0)-thickness/2.); }
+    float cells(vec2 uv)
+    {
+        float thickness_x = fwidth(uv.x);
+        float thickness_y = fwidth(uv.y);
+        //float thickness = (thickness_x + thickness_y) / 2.;
+        uv = fract(uv);
+        uv = fract(min(uv, 1. - uv));
+
+        float x = vertical_line(uv, 0., thickness_x);
+        float y = horizontal_line(uv, 0., thickness_y);
+        return
+            min(x, y) +
+            max(x, y);
+    }
+    float xy_axis(vec2 uv)
+    {
+        float thickness_x = fwidth(uv.x);
+        float thickness_y = fwidth(uv.y);
+        return max(x_axis(uv, thickness_x), y_axis(uv, thickness_y));
+    }
+    
+    float square( vec2 p)
+    {
+        vec2 d = abs(p)- vec2(0.8);
+        return length(max(d,0.0)) + min(max(d.x,d.y),0.0);
+    }
+    
+    float triangle( vec2 p )
+    {
+        const float k = sqrt(3.0);
+        const float r = 0.8;
+        p.x = abs(p.x) - r;
+        p.y = p.y + r/k;
+        if( p.x+k*p.y>0.0 ) p = vec2(p.x-k*p.y,-k*p.x-p.y)/2.0;
+        p.x -= clamp( p.x, -2.0*r, 0.0 );
+        return -length(p)*sign(p.y);
+    }
+    
+    void main()
+    {
+        // Normalized pixel coordinates (from -1 to 1)
+        vec2 uv = (2.*gl_FragCoord.xy-u_resolution.xy)/u_resolution.y;
+        
+        // Shift pixels using camera pos
+        uv += cameraPos;
+        // Space Curvature Code, any coordinates changes.
+        // Here can be many variants at once, for example:
+        float time = (u_time + 20.) / 10.;
+
+        #if(variant == 1)
+            uv.x += sin(uv.y * time);
+            uv.y += cos(uv.x * time);
+        #elif(variant == 2)
+            float tempX = uv.x;
+            uv.x += sin(uv.y * time);
+            uv.y += sin(tempX * time);
+        #endif
+        
+        // Set Color (X - Red, Y - Green.)
+        vec4 col = vec4(0, 0, 0, 0);
+        
+        // Grid Lines
+        col = mix(col, vec4(0, 0, 0, 1), cells(uv*10.));
+        col = mix(col, vec4(0,0,1,1), xy_axis(uv));
+
+        gl_FragColor = col;
+    }
+`);*/
